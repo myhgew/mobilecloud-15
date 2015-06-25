@@ -17,26 +17,57 @@
  */
 package org.magnum.dataup;
 
+import org.magnum.dataup.model.Video;
+import org.magnum.dataup.model.VideoStatus;
 import org.springframework.stereotype.Controller;
+import retrofit.client.Response;
+import retrofit.http.Body;
+import retrofit.http.Part;
+import retrofit.http.Path;
+import retrofit.mime.TypedFile;
+
+import java.util.Collection;
 
 @Controller
-public class AnEmptyController {
+public class AnEmptyController implements VideoSvcApi {
 
 	/**
 	 * You will need to create one or more Spring controllers to fulfill the
 	 * requirements of the assignment. If you use this file, please rename it
 	 * to something other than "AnEmptyController"
-	 * 
-	 * 
-		 ________  ________  ________  ________          ___       ___  ___  ________  ___  __       
-		|\   ____\|\   __  \|\   __  \|\   ___ \        |\  \     |\  \|\  \|\   ____\|\  \|\  \     
-		\ \  \___|\ \  \|\  \ \  \|\  \ \  \_|\ \       \ \  \    \ \  \\\  \ \  \___|\ \  \/  /|_   
-		 \ \  \  __\ \  \\\  \ \  \\\  \ \  \ \\ \       \ \  \    \ \  \\\  \ \  \    \ \   ___  \  
-		  \ \  \|\  \ \  \\\  \ \  \\\  \ \  \_\\ \       \ \  \____\ \  \\\  \ \  \____\ \  \\ \  \ 
-		   \ \_______\ \_______\ \_______\ \_______\       \ \_______\ \_______\ \_______\ \__\\ \__\
-		    \|_______|\|_______|\|_______|\|_______|        \|_______|\|_______|\|_______|\|__| \|__|
-                                                                                                                                                                                                                                                                        
-	 * 
+	 *
+	 *
+	 ________  ________  ________  ________          ___       ___  ___  ________  ___  __
+	 |\   ____\|\   __  \|\   __  \|\   ___ \        |\  \     |\  \|\  \|\   ____\|\  \|\  \
+	 \ \  \___|\ \  \|\  \ \  \|\  \ \  \_|\ \       \ \  \    \ \  \\\  \ \  \___|\ \  \/  /|_
+	 \ \  \  __\ \  \\\  \ \  \\\  \ \  \ \\ \       \ \  \    \ \  \\\  \ \  \    \ \   ___  \
+	 \ \  \|\  \ \  \\\  \ \  \\\  \ \  \_\\ \       \ \  \____\ \  \\\  \ \  \____\ \  \\ \  \
+	 \ \_______\ \_______\ \_______\ \_______\       \ \_______\ \_______\ \_______\ \__\\ \__\
+	 \|_______|\|_______|\|_______|\|_______|        \|_______|\|_______|\|_______|\|__| \|__|
+
+	 *
 	 */
+
+	@Override
+	public Collection<Video> getVideoList() {
+		return null;
+	}
+
+	@Override
+	public Video addVideo(@Body Video v) {
+		return null;
+	}
+
+	@Override
+	public VideoStatus setVideoData(@Path(ID_PARAMETER) long id, @Part(DATA_PARAMETER) TypedFile videoData) {
+		return null;
+	}
+
+	@Override
+	public Response getData(@Path(ID_PARAMETER) long id) {
+		return null;
+	}
+
+
 	
 }
