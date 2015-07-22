@@ -42,20 +42,13 @@ package org.magnum.dataup;
     \:\__\        \::/  /       \::/  /        /:/  /     \:\__\          \:\__\        
      \/__/         \/__/         \/__/         \/__/       \/__/           \/__/        
  */
-import java.util.Collection;
-
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
-
 import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.Multipart;
-import retrofit.http.POST;
-import retrofit.http.Part;
-import retrofit.http.Path;
-import retrofit.http.Streaming;
+import retrofit.http.*;
 import retrofit.mime.TypedFile;
+
+import java.util.Collection;
 
 /**
  * This interface defines an API for a VideoSvc. The

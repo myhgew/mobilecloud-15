@@ -17,22 +17,15 @@
  */
 package org.magnum.dataup;
 
+import org.magnum.dataup.helper.VideoManager;
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.Part;
-import retrofit.http.Path;
 import retrofit.mime.TypedFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Controller
 public class VideoSvcApiController implements VideoSvcApi {
@@ -52,36 +45,24 @@ public class VideoSvcApiController implements VideoSvcApi {
      * \|_______|\|_______|\|_______|\|_______|        \|_______|\|_______|\|_______|\|__| \|__|
      */
 
-    // An in-memory list that the servlet uses to store the
-    // videos that are sent to it by clients
-    private List<Video> videos = new CopyOnWriteArrayList<Video>();
+    private VideoManager videoManager = new VideoManager();
 
     @RequestMapping(value = VIDEO_SVC_PATH, method = RequestMethod.GET)
-    public @ResponseBody Collection<Video> getVideoList() {
-//        Collection<Video> videoList = new ArrayList<>();
-//        Video video = Video.create().withDuration(10).withSubject("subtitle").withTitle("title").build();
-//        videoList.add(video);
-//        return videoList;
-        return videos;
+    public
+    @ResponseBody
+    Collection<Video> getVideoList() {
+        return videoManager.getVideoList();
     }
 
-    @RequestMapping(value=VIDEO_SVC_PATH, method=RequestMethod.POST)
-    public @ResponseBody Video addVideo(@RequestBody Video v) {
-        try {
-            VideoFileManager videoFileManager = VideoFileManager.get();
-
-
-            videos.add(v);
-            return v;
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            return null;
-        }
+    @RequestMapping(value = VIDEO_SVC_PATH, method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Video addVideo(@RequestBody Video v) {
+        return videoManager.save(v);
     }
 
     @RequestMapping(value = VIDEO_DATA_PATH, method = RequestMethod.POST)
-    public VideoStatus setVideoData(@RequestParam(ID_PARAMETER) long id, @RequestPart(DATA_PARAMETER) TypedFile videoData) {
+    public VideoStatus setVideoData(@PathVariable(ID_PARAMETER) long id, @RequestPart(DATA_PARAMETER) TypedFile videoData) {
         // TODO
         return null;
     }

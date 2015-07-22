@@ -15,7 +15,9 @@
  * limitations under the License.
  * 
  */
-package org.magnum.dataup;
+package org.magnum.dataup.helper;
+
+import org.magnum.dataup.model.Video;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,8 +27,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-
-import org.magnum.dataup.model.Video;
 
 /**
  * This class provides a simple implementation to store video binary
