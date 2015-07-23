@@ -69,9 +69,4 @@ public class Application {
     public VideoFileManager videoFileManager() throws IOException {
         return VideoFileManager.get();
     }
-
-    @Bean
-    public VideoManager videoManager() {
-        return new VideoManager();
-    }
 }

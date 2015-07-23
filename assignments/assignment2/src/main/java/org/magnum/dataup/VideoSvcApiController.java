@@ -24,10 +24,18 @@ import org.magnum.dataup.model.VideoStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class VideoSvcApiController implements VideoSvcApi {
@@ -48,40 +56,93 @@ public class VideoSvcApiController implements VideoSvcApi {
      */
 
     @Autowired
-    private VideoManager videoManager;
-
-    @Autowired
     private VideoFileManager videoFileManager;
+
+    private static final AtomicLong currentId = new AtomicLong(0L);
+    private Map<Long, Video> videos = new HashMap<>();
+
 
     @RequestMapping(value = VIDEO_SVC_PATH, method = RequestMethod.GET)
     public
     @ResponseBody
     Collection<Video> getVideoList() {
-        return videoManager.getVideoList();
+        return videos.values();
     }
 
     @RequestMapping(value = VIDEO_SVC_PATH, method = RequestMethod.POST)
     public
     @ResponseBody
     Video addVideo(@RequestBody Video v) {
-        return videoManager.save(v);
+        checkAndSetId(v);
+        v.setDataUrl(getDataUrl(v.getId()));
+        videos.put(v.getId(), v);
+        return v;
     }
 
     @RequestMapping(value = VIDEO_DATA_PATH, method = RequestMethod.POST)
     public
     @ResponseBody
     VideoStatus setVideoData(@PathVariable(ID_PARAMETER) long id, @RequestPart(DATA_PARAMETER) TypedFile videoData) {
-        VideoStatus videoStatus = new VideoStatus(VideoStatus.VideoState.READY);
-        return videoStatus;
+        Video foundVideo = findVideoById(id);
+
+        if (foundVideo == null) return null;
+        if (videoFileManager.hasVideoData(foundVideo)) return null;
+
+        try {
+            videoFileManager.saveVideoData(foundVideo, videoData.in());
+            VideoStatus videoStatus = new VideoStatus(VideoStatus.VideoState.READY);
+            return videoStatus;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @RequestMapping(value = VIDEO_DATA_PATH, method = RequestMethod.GET)
     public
     @ResponseBody
     Response getData(@PathVariable(ID_PARAMETER) long id) {
-        // TODO
-        return new Response("", 200, "good", null, null);
+        Video foundVideo = findVideoById(id);
+
+        if (foundVideo == null) return new Response("", 404, "", null, null);
+
+        OutputStream outputStream = null;
+        try {
+            videoFileManager.copyVideoData(foundVideo, outputStream);
+            return new Response("", 200, "good", null, null);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new Response("", 404, "", null, null);
     }
 
+    private void checkAndSetId(Video entity) {
+        if (entity.getId() == 0) {
+            entity.setId(currentId.incrementAndGet());
+        }
+    }
 
+    public Video findVideoById(long id) {
+        for (Long currentId : videos.keySet()) {
+            if (id == currentId) return videos.get(currentId);
+        }
+        return null;
+    }
+
+    private String getDataUrl(long videoId){
+        String url = getUrlBaseForLocalServer() + "/video/" + videoId + "/data";
+        return url;
+    }
+
+    private String getUrlBaseForLocalServer() {
+        HttpServletRequest request =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String base =
+                "http://"+request.getServerName()
+                        + ((request.getServerPort() != 80) ? ":"+request.getServerPort() : "");
+        return base;
+    }
 }
