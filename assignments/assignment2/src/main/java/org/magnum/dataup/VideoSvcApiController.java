@@ -17,9 +17,11 @@
  */
 package org.magnum.dataup;
 
+import org.magnum.dataup.helper.VideoFileManager;
 import org.magnum.dataup.helper.VideoManager;
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import retrofit.client.Response;
@@ -45,7 +47,11 @@ public class VideoSvcApiController implements VideoSvcApi {
      * \|_______|\|_______|\|_______|\|_______|        \|_______|\|_______|\|_______|\|__| \|__|
      */
 
-    private VideoManager videoManager = new VideoManager();
+    @Autowired
+    private VideoManager videoManager;
+
+    @Autowired
+    private VideoFileManager videoFileManager;
 
     @RequestMapping(value = VIDEO_SVC_PATH, method = RequestMethod.GET)
     public
@@ -62,15 +68,19 @@ public class VideoSvcApiController implements VideoSvcApi {
     }
 
     @RequestMapping(value = VIDEO_DATA_PATH, method = RequestMethod.POST)
-    public VideoStatus setVideoData(@PathVariable(ID_PARAMETER) long id, @RequestPart(DATA_PARAMETER) TypedFile videoData) {
-        // TODO
-        return null;
+    public
+    @ResponseBody
+    VideoStatus setVideoData(@PathVariable(ID_PARAMETER) long id, @RequestPart(DATA_PARAMETER) TypedFile videoData) {
+        VideoStatus videoStatus = new VideoStatus(VideoStatus.VideoState.READY);
+        return videoStatus;
     }
 
     @RequestMapping(value = VIDEO_DATA_PATH, method = RequestMethod.GET)
-    public Response getData(@PathVariable(ID_PARAMETER) long id) {
+    public
+    @ResponseBody
+    Response getData(@PathVariable(ID_PARAMETER) long id) {
         // TODO
-        return null;
+        return new Response("", 200, "good", null, null);
     }
 
 

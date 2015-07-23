@@ -2,22 +2,14 @@ package org.magnum.dataup.helper;
 
 import org.magnum.dataup.model.Video;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class VideoManager {
     private static final AtomicLong currentId = new AtomicLong(0L);
     private Map<Long, Video> videos = new HashMap<>();
-    private VideoFileManager videoFileManager;
-
-    public VideoManager() {
-        try {
-            videoFileManager = VideoFileManager.get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public Collection<Video> getVideoList() {
         return videos.values();
@@ -38,5 +30,9 @@ public class VideoManager {
         if (entity.getId() == 0) {
             entity.setId(currentId.incrementAndGet());
         }
+    }
+
+    public Video findVideoById(long id) {
+        return null;
     }
 }
